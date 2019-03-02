@@ -1,7 +1,9 @@
+#include <cstdio>
 #include <cstdlib>
 #include <cstdint>
 #include <cstring>
 #include "image.h"
+#include "pgm.h"
 
 Image::Image(int x, int y) {
 	xres = x;
@@ -55,7 +57,7 @@ uint8_t Image::findMedian() const{
 	uint8_t *list = (uint8_t*) malloc(sizeof(uint8_t) * xres * yres);
 	memcpy(list, image, sizeof(uint8_t) * xres * yres);
 	uint8_t median = findKth(list, xres*yres/2, 0, xres*yres);
-	//free(list);
+	free(list);
 	return median;
 }
 
@@ -65,6 +67,12 @@ bool Image::fill(int x, int y, uint8_t value) {
 		return true;
 	}
 	return false;
+}
+
+void Image::write(int i) {
+	char x[50];
+	sprintf(x, "result/%d.pgm", i);
+	WritePGM(image, xres, yres, x);
 }
 
 void Image::freeMem() {
@@ -77,7 +85,7 @@ void imageShrink(const Image *img, Image *img_ret) {
 	int xres = img->getX(), yres = img->getY();
 	for (int i = 0; i < xres; i+=2) {
 		for (int j = 0; j < yres; j+=2) {
-			unsigned pixel = (img->getPixel(i, j), img->getPixel(i, j+1), img->getPixel(i+1, j), img->getPixel(i+1, j+1)) / 4;
+			unsigned pixel = (img->getPixel(i, j) + img->getPixel(i, j+1) + img->getPixel(i+1, j) + img->getPixel(i+1, j+1)) / 4;
 			img_ret->fill(i/2, j/2, (uint8_t) pixel);
 		}
 	}

@@ -8,6 +8,7 @@ public:
 	uint8_t getPixel(int, int) const;
 	uint8_t findMedian() const;
 	bool fill(int, int, uint8_t);
+	void write(int);
 	void freeMem();
 
 private:
